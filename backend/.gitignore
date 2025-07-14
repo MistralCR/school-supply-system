@@ -1,0 +1,100 @@
+# Dependencias
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Variables de entorno
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs/
+*.log
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Directorio de cobertura generado por herramientas como istanbul
+coverage/
+.nyc_output
+
+# Instrumentación de cobertura compilada por jscoverage/JSCover
+lib-cov
+
+# Directorio de cobertura usado por Istanbul
+coverage
+
+# Cobertura de código de nyc
+.nyc_output
+
+# Dependency directories
+jspm_packages/
+
+# Directorios opcionales de npm
+.npm
+
+# Archivo de bloqueo de Yarn
+yarn.lock
+
+# dotenv environment variables file
+.env
+.env.test
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# next.js build output
+.next
+
+# nuxt.js build output
+.nuxt
+
+# vuepress build output
+.vuepress/dist
+
+# Serverless directories
+.serverless
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# Archivos del sistema operativo
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Archivos de uploads
+uploads/
+temp/
+
+# Base de datos local
+*.db
+*.sqlite
+*.sqlite3
+
+# Archivos de certificados SSL
+*.pem
+*.key
+*.crt
