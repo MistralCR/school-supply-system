@@ -26,6 +26,12 @@ const materialSchema = mongoose.Schema({
   imagen: {
     type: String,
   },
+  etiquetas: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Etiqueta",
+    },
+  ],
   disponible: {
     type: Boolean,
     default: true,

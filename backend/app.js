@@ -22,6 +22,7 @@ app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/materials", require("./routes/materialRoutes"));
 app.use("/api/lists", require("./routes/listaRoutes"));
 app.use("/api/padre", require("./routes/padreRoutes"));
+app.use("/api/etiquetas", require("./routes/etiquetaRoutes"));
 
 // Ruta de prueba
 app.get("/", (req, res) => {

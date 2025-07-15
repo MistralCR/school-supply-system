@@ -6,9 +6,19 @@ const Categoria = require("../models/Categoria");
 // @access  Public
 const getMaterials = async (req, res) => {
   try {
-    const materials = await Material.find({})
+    const { etiqueta, categoria, nivel, disponible } = req.query;
+    let filtros = {};
+
+    // Aplicar filtros
+    if (etiqueta) filtros.etiquetas = etiqueta;
+    if (categoria) filtros.categoria = categoria;
+    if (nivel) filtros.nivel = nivel;
+    if (disponible !== undefined) filtros.disponible = disponible === "true";
+
+    const materials = await Material.find(filtros)
       .populate("categoria", "nombre")
-      .populate("nivel", "nombre grado");
+      .populate("nivel", "nombre grado")
+      .populate("etiquetas", "nombre color icono");
 
     res.json(materials);
   } catch (error) {
@@ -25,7 +35,8 @@ const getMaterialById = async (req, res) => {
   try {
     const material = await Material.findById(req.params.id)
       .populate("categoria", "nombre")
-      .populate("nivel", "nombre grado");
+      .populate("nivel", "nombre grado")
+      .populate("etiquetas", "nombre color icono");
 
     if (material) {
       res.json(material);
@@ -43,7 +54,8 @@ const getMaterialById = async (req, res) => {
 // @route   POST /api/materials
 // @access  Private (Profesor)
 const createMaterial = async (req, res) => {
-  const { nombre, descripcion, categoria, nivel, precio, imagen } = req.body;
+  const { nombre, descripcion, categoria, nivel, precio, imagen, etiquetas } =
+    req.body;
 
   try {
     const material = new Material({
@@ -53,13 +65,15 @@ const createMaterial = async (req, res) => {
       nivel,
       precio,
       imagen,
+      etiquetas: etiquetas || [],
     });
 
     const createdMaterial = await material.save();
 
     const populatedMaterial = await Material.findById(createdMaterial._id)
       .populate("categoria", "nombre")
-      .populate("nivel", "nombre grado");
+      .populate("nivel", "nombre grado")
+      .populate("etiquetas", "nombre color icono");
 
     res.status(201).json(populatedMaterial);
   } catch (error) {
@@ -73,7 +87,8 @@ const createMaterial = async (req, res) => {
 // @route   PUT /api/materials/:id
 // @access  Private (Profesor)
 const updateMaterial = async (req, res) => {
-  const { nombre, descripcion, categoria, nivel, precio, imagen } = req.body;
+  const { nombre, descripcion, categoria, nivel, precio, imagen, etiquetas } =
+    req.body;
 
   try {
     const material = await Material.findById(req.params.id);
@@ -85,12 +100,14 @@ const updateMaterial = async (req, res) => {
       material.nivel = nivel || material.nivel;
       material.precio = precio || material.precio;
       material.imagen = imagen || material.imagen;
+      if (etiquetas !== undefined) material.etiquetas = etiquetas;
 
       const updatedMaterial = await material.save();
 
       const populatedMaterial = await Material.findById(updatedMaterial._id)
         .populate("categoria", "nombre")
-        .populate("nivel", "nombre grado");
+        .populate("nivel", "nombre grado")
+        .populate("etiquetas", "nombre color icono");
 
       res.json(populatedMaterial);
     } else {
