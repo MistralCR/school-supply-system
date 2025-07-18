@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Alert, Card, ListGroup } from "react-bootstrap";
-import { useAuth } from "../../context/AuthContext-simple";
+import { useAuth } from "../../context/AuthContext";
 import padreService from "../../services/padreService";
 
 function CompartirListaModal({ show, onHide }) {

@@ -17,6 +17,8 @@ function AdminLists() {
   const [lists, setLists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [listToDelete, setListToDelete] = useState(null);
   const [selectedList, setSelectedList] = useState(null);
 
   useEffect(() => {
@@ -45,13 +47,21 @@ function AdminLists() {
   };
 
   const handleDeleteList = async (listId) => {
-    if (window.confirm("¿Está seguro de eliminar esta lista?")) {
+    setListToDelete(listId);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (listToDelete) {
       try {
-        await listsService.deleteList(listId);
+        await listsService.deleteList(listToDelete);
         toast.success("Lista eliminada correctamente");
         loadLists();
       } catch (error) {
         toast.error("Error al eliminar lista");
+      } finally {
+        setShowDeleteModal(false);
+        setListToDelete(null);
       }
     }
   };
@@ -279,6 +289,33 @@ function AdminLists() {
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
             Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal de confirmación de eliminación */}
+      <Modal
+        show={showDeleteModal}
+        onHide={() => setShowDeleteModal(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmar Eliminación</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="text-center">
+            <i className="bi bi-exclamation-triangle text-danger fs-1 mb-3"></i>
+            <h5>¿Estás seguro de eliminar esta lista?</h5>
+            <p className="text-muted mb-0">Esta acción no se puede deshacer.</p>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Cancelar
+          </Button>
+          <Button variant="danger" onClick={confirmDelete}>
+            <i className="bi bi-trash me-2"></i>
+            Eliminar Lista
           </Button>
         </Modal.Footer>
       </Modal>

@@ -9,7 +9,7 @@ import {
   Alert,
   Badge,
 } from "react-bootstrap";
-import { useAuth } from "../context/AuthContext-simple";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import RegisterModal from "../components/Auth/RegisterModal";

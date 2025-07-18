@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Table, Badge, Card, Alert } from "react-bootstrap";
-import { useAuth } from "../../context/AuthContext-simple";
+import { useAuth } from "../../context/AuthContext";
 import padreService from "../../services/padreService";
 
 function MisListasModal({ show, onHide }) {

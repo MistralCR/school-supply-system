@@ -1,5 +1,5 @@
 import React from "react";
-import { useAuth } from "../context/AuthContext-simple";
+import { useAuth } from "../context/AuthContext";
 
 function ProtectedRoute({ children, allowedRoles = [] }) {
   const { isAuthenticated, user, loading } = useAuth();
@@ -37,6 +37,13 @@ function ProtectedRoute({ children, allowedRoles = [] }) {
     return null;
   }
 
+  console.log(
+    "✅ ProtectedRoute: Usuario autenticado, verificando permisos..."
+  );
+  console.log("  - allowedRoles.length:", allowedRoles.length);
+  console.log("  - user?.rol:", user?.rol);
+  console.log("  - allowedRoles:", allowedRoles);
+
   if (allowedRoles.length > 0 && !allowedRoles.includes(user?.rol)) {
     console.log(
       "🚫 ProtectedRoute: Acceso denegado para rol:",
@@ -44,16 +51,28 @@ function ProtectedRoute({ children, allowedRoles = [] }) {
       "roles permitidos:",
       allowedRoles
     );
+
     return (
       <div className="container mt-5">
         <div className="alert alert-danger" role="alert">
           <h4 className="alert-heading">Acceso Denegado</h4>
           <p>No tienes permisos para acceder a esta página.</p>
+          <hr />
+          <p className="mb-0">
+            <small>
+              Tu rol: <code>{user?.rol}</code>
+            </small>
+            <br />
+            <small>
+              Roles permitidos: <code>{allowedRoles.join(", ")}</code>
+            </small>
+          </p>
         </div>
       </div>
     );
   }
 
+  console.log("✅ ProtectedRoute: Acceso permitido, renderizando componente");
   return children;
 }
 

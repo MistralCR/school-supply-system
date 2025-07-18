@@ -1,7 +1,7 @@
 import React from "react";
 import { Nav } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext-simple";
+import { useAuth } from "../context/AuthContext";
 
 function Sidebar() {
   const { user } = useAuth();

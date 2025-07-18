@@ -9,7 +9,7 @@ import {
   Row,
   Col,
 } from "react-bootstrap";
-import { useAuth } from "../../context/AuthContext-simple";
+import { useAuth } from "../../context/AuthContext";
 import padreService from "../../services/padreService";
 
 function ResumenComprasModal({ show, onHide }) {

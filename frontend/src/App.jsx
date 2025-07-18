@@ -9,7 +9,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // Context
-import { useAuth } from "./context/AuthContext-simple";
+import { useAuth } from "./context/AuthContext";
 
 // Components
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -24,7 +24,6 @@ import DocenteDashboard from "./pages/Docente/Dashboard";
 import DocenteListas from "./pages/Docente/Lists";
 import DocenteMaterials from "./pages/Docente/Materials";
 import PadreDashboard from "./pages/Padre/Dashboard";
-import PadreDashboardSimple from "./pages/Padre/DashboardSimple";
 import PadreListas from "./pages/Padre/Lists";
 import PadreResumen from "./pages/Padre/Resumen";
 
@@ -96,28 +95,12 @@ function App() {
             }
           />
 
-          {/* Ruta de DEBUG temporal */}
-          <Route
-            path="/debug"
-            element={
-              <div className="container mt-5">
-                <div className="alert alert-info">
-                  <h3>🔍 Debug Route</h3>
-                  <p>Esta es una ruta de prueba para verificar navegación</p>
-                </div>
-              </div>
-            }
-          />
-
-          {/* Ruta SIMPLE para padre (sin ProtectedRoute) */}
-          <Route path="/padre/simple" element={<PadreDashboardSimple />} />
-
           {/* Rutas protegidas para Padre */}
           <Route
             path="/padre/dashboard"
             element={
               <ProtectedRoute allowedRoles={["padre"]}>
-                <PadreDashboardSimple />
+                <PadreDashboard />
               </ProtectedRoute>
             }
           />

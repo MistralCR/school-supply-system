@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Card, Row, Col, Table, Badge, Button } from "react-bootstrap";
-import { useAuth } from "../../context/AuthContext-simple";
+import { Card, Row, Col, Table, Badge, Button, Modal } from "react-bootstrap";
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Layout from "../../components/Layout";
 import usersService from "../../services/usersService";
@@ -10,6 +10,7 @@ import materialsService from "../../services/materialsService";
 function AdminDashboard() {
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalProfesores: 0,
@@ -21,10 +22,13 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(true);
 
   const handleLogout = () => {
-    if (window.confirm("¿Estás seguro que deseas cerrar sesión?")) {
-      logout();
-      navigate("/login");
-    }
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = () => {
+    logout();
+    navigate("/login");
+    setShowLogoutModal(false);
   };
 
   useEffect(() => {
@@ -243,6 +247,32 @@ function AdminDashboard() {
           </Card>
         </Col>
       </Row>
+
+      {/* Modal de confirmación de logout */}
+      <Modal
+        show={showLogoutModal}
+        onHide={() => setShowLogoutModal(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmar Cierre de Sesión</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="text-center">
+            <i className="bi bi-question-circle text-warning fs-1 mb-3"></i>
+            <p className="mb-0">¿Estás seguro que deseas cerrar sesión?</p>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowLogoutModal(false)}>
+            Cancelar
+          </Button>
+          <Button variant="danger" onClick={confirmLogout}>
+            <i className="bi bi-box-arrow-right me-2"></i>
+            Cerrar Sesión
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Layout>
   );
 }

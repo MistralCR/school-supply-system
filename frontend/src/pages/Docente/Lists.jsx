@@ -13,12 +13,16 @@ import { toast } from "react-toastify";
 import Layout from "../../components/Layout";
 import listsService from "../../services/listsService";
 import materialsService from "../../services/materialsService";
+import levelsService from "../../services/levelsService";
 
 function DocenteListas() {
   const [lists, setLists] = useState([]);
   const [materials, setMaterials] = useState([]);
+  const [levels, setLevels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [listToDelete, setListToDelete] = useState(null);
   const [selectedList, setSelectedList] = useState(null);
   const [formData, setFormData] = useState({
     nombre: "",
@@ -34,12 +38,14 @@ function DocenteListas() {
 
   const loadData = async () => {
     try {
-      const [listsData, materialsData] = await Promise.all([
+      const [listsData, materialsData, levelsData] = await Promise.all([
         listsService.getMyLists(),
         materialsService.getMaterials(),
+        levelsService.getLevels(),
       ]);
       setLists(listsData);
       setMaterials(materialsData);
+      setLevels(levelsData);
     } catch (error) {
       toast.error("Error al cargar datos");
     } finally {
@@ -127,13 +133,21 @@ function DocenteListas() {
   };
 
   const handleDelete = async (listId) => {
-    if (window.confirm("¿Está seguro de eliminar esta lista?")) {
+    setListToDelete(listId);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (listToDelete) {
       try {
-        await listsService.deleteList(listId);
+        await listsService.deleteList(listToDelete);
         toast.success("Lista eliminada correctamente");
         loadData();
       } catch (error) {
         toast.error("Error al eliminar lista");
+      } finally {
+        setShowDeleteModal(false);
+        setListToDelete(null);
       }
     }
   };
@@ -315,15 +329,20 @@ function DocenteListas() {
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Nivel Educativo (ID)</Form.Label>
-                  <Form.Control
-                    type="text"
+                  <Form.Label>Nivel Educativo</Form.Label>
+                  <Form.Select
                     name="nivel"
                     value={formData.nivel}
                     onChange={handleChange}
                     required
-                    placeholder="ID del nivel educativo"
-                  />
+                  >
+                    <option value="">Selecciona un nivel educativo</option>
+                    {levels.map((level) => (
+                      <option key={level._id} value={level._id}>
+                        {level.nombre} ({level.grado})
+                      </option>
+                    ))}
+                  </Form.Select>
                 </Form.Group>
               </Col>
             </Row>
@@ -414,6 +433,33 @@ function DocenteListas() {
             </Button>
           </Modal.Footer>
         </Form>
+      </Modal>
+
+      {/* Modal de confirmación de eliminación */}
+      <Modal
+        show={showDeleteModal}
+        onHide={() => setShowDeleteModal(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmar Eliminación</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="text-center">
+            <i className="bi bi-exclamation-triangle text-danger fs-1 mb-3"></i>
+            <h5>¿Estás seguro de eliminar esta lista?</h5>
+            <p className="text-muted mb-0">Esta acción no se puede deshacer.</p>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Cancelar
+          </Button>
+          <Button variant="danger" onClick={confirmDelete}>
+            <i className="bi bi-trash me-2"></i>
+            Eliminar Lista
+          </Button>
+        </Modal.Footer>
       </Modal>
     </Layout>
   );

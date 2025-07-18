@@ -16,6 +16,8 @@ function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [formData, setFormData] = useState({
     nombre: "",
@@ -91,13 +93,21 @@ function AdminUsers() {
   };
 
   const handleDelete = async (userId) => {
-    if (window.confirm("¿Está seguro de eliminar este usuario?")) {
+    setUserToDelete(userId);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (userToDelete) {
       try {
-        await usersService.deleteUser(userId);
+        await usersService.deleteUser(userToDelete);
         toast.success("Usuario eliminado correctamente");
         loadUsers();
       } catch (error) {
         toast.error("Error al eliminar usuario");
+      } finally {
+        setShowDeleteModal(false);
+        setUserToDelete(null);
       }
     }
   };
@@ -252,6 +262,33 @@ function AdminUsers() {
             </Button>
           </Modal.Footer>
         </Form>
+      </Modal>
+
+      {/* Modal de confirmación de eliminación */}
+      <Modal
+        show={showDeleteModal}
+        onHide={() => setShowDeleteModal(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmar Eliminación</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="text-center">
+            <i className="bi bi-exclamation-triangle text-danger fs-1 mb-3"></i>
+            <h5>¿Estás seguro de eliminar este usuario?</h5>
+            <p className="text-muted mb-0">Esta acción no se puede deshacer.</p>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Cancelar
+          </Button>
+          <Button variant="danger" onClick={confirmDelete}>
+            <i className="bi bi-trash me-2"></i>
+            Eliminar Usuario
+          </Button>
+        </Modal.Footer>
       </Modal>
     </Layout>
   );
